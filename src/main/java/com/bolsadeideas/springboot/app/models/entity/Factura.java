@@ -19,6 +19,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name="facturas")
@@ -28,6 +29,7 @@ public class Factura implements Serializable{
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
+	@NotEmpty
 	private String descripcion;
 	private String observacion;
 	
@@ -41,7 +43,7 @@ public class Factura implements Serializable{
 	//FIN RELACION CON CLIENTE
 	
 	//RELACION CON ItemFactura (uno a muchos)
-	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL)//LAZY(para que cargue solo las facturas al momento de consultar facturas y para eliminarla se eliminen sus relaciones)
+	@OneToMany(fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)//LAZY(para que cargue solo las facturas al momento de consultar facturas y para eliminarla se eliminen sus relaciones)
 	@JoinColumn(name="factura_id")//LLAVE RELACIONADA CON ITEMFACTURA nombre en la tabla MYSQL
 	private List<ItemFactura> itemsFactura;
 	

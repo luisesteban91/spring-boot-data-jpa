@@ -152,6 +152,10 @@ public class Cliente implements Serializable{ //Serializable RECOMENDADO CUANDO 
 		facturas.add(factura);
 	}
 
+	@Override
+	public String toString() {
+		return nombre + " apellido=" + apellido;
+	}
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
