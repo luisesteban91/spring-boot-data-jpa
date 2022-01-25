@@ -1,7 +1,8 @@
 package com.bolsadeideas.springboot.app;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -24,15 +25,29 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private LoginSuccessHandler successHandler;
 	
-	 @Bean
-	 public BCryptPasswordEncoder passwordEncoder() {
-		 return new BCryptPasswordEncoder();
-	 }
+	/**
+	 * inyectar Datasource para la conexicon a la BD
+	 */
+	@Autowired
+	DataSource dataSource;
+	
+	
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+	
 	
 	 @Autowired
 	public void configurerGlobal(AuthenticationManagerBuilder builder) throws Exception{
 		
-		PasswordEncoder encoder = passwordEncoder();
+		 //pasar el datasource como instancia
+		 builder.jdbcAuthentication()
+		 .dataSource(dataSource)
+		 .passwordEncoder(passwordEncoder)
+		 .usersByUsernameQuery("select username, password, enabled from users where username=?")
+		 .authoritiesByUsernameQuery("select u.username, a.authority from authorities a inner join users u on (a.user_id=u.id) where u.username=?");
+		 
+		 /*
+		PasswordEncoder encoder = this.passwordEncoder;
 //		UserBuilder users = User.builder().passwordEncoder(password -> {
 //			return encoder.encode(password);
 //		});
@@ -42,7 +57,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		builder.inMemoryAuthentication()
 		.withUser(users.username("admin").password("12345").roles("ADMIN","USER"))
 		.withUser(users.username("luis").password("12345").roles("USER"));
-		
+		*/
 	}
 
 	 /*
