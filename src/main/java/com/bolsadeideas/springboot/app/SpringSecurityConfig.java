@@ -14,8 +14,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.bolsadeideas.springboot.app.auth.handler.LoginSuccessHandler;
+import com.bolsadeideas.springboot.app.models.service.JpaUserDetailsService;
 
-@EnableGlobalMethodSecurity(securedEnabled = true) //habilitar la seguridad de forma global
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled=true) //habilitar la seguridad de forma global
 @Configuration
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	
@@ -25,40 +26,18 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private LoginSuccessHandler successHandler;
 	
+	@Autowired
+	private JpaUserDetailsService userDetailService;
+	
 	/**
 	 * inyectar Datasource para la conexicon a la BD
 	 */
-	@Autowired
-	DataSource dataSource;
+	//@Autowired
+	//DataSource dataSource;
 	
 	
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
-	
-	
-	 @Autowired
-	public void configurerGlobal(AuthenticationManagerBuilder builder) throws Exception{
-		
-		 //pasar el datasource como instancia
-		 builder.jdbcAuthentication()
-		 .dataSource(dataSource)
-		 .passwordEncoder(passwordEncoder)
-		 .usersByUsernameQuery("select username, password, enabled from users where username=?")
-		 .authoritiesByUsernameQuery("select u.username, a.authority from authorities a inner join users u on (a.user_id=u.id) where u.username=?");
-		 
-		 /*
-		PasswordEncoder encoder = this.passwordEncoder;
-//		UserBuilder users = User.builder().passwordEncoder(password -> {
-//			return encoder.encode(password);
-//		});
-		UserBuilder users = User.builder().passwordEncoder(encoder::encode);		
-		
-		//crear usuarios en memoria
-		builder.inMemoryAuthentication()
-		.withUser(users.username("admin").password("12345").roles("ADMIN","USER"))
-		.withUser(users.username("luis").password("12345").roles("USER"));
-		*/
-	}
 
 	 /*
 	  * configure metodo para configurar las rutas http
@@ -83,6 +62,35 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		.and()
 		.exceptionHandling().accessDeniedPage("/error_403"); //redirigir cuando exista un 403
 		
+	}
+	
+	 @Autowired
+	public void configurerGlobal(AuthenticationManagerBuilder builder) throws Exception{
+		/*Configuracion con JPA*/
+		 builder.userDetailsService(userDetailService)
+		 .passwordEncoder(passwordEncoder);
+		 
+		 /* Configuracion con JDBC
+		 //pasar el datasource como instancia
+		 builder.jdbcAuthentication()
+		 .dataSource(dataSource)
+		 .passwordEncoder(passwordEncoder)
+		 .usersByUsernameQuery("select username, password, enabled from users where username=?")
+		 .authoritiesByUsernameQuery("select u.username, a.authority from authorities a inner join users u on (a.user_id=u.id) where u.username=?");
+		 */
+		 
+		 /*
+		PasswordEncoder encoder = this.passwordEncoder;
+//		UserBuilder users = User.builder().passwordEncoder(password -> {
+//			return encoder.encode(password);
+//		});
+		UserBuilder users = User.builder().passwordEncoder(encoder::encode);		
+		
+		//crear usuarios en memoria
+		builder.inMemoryAuthentication()
+		.withUser(users.username("admin").password("12345").roles("ADMIN","USER"))
+		.withUser(users.username("luis").password("12345").roles("USER"));
+		*/
 	}
 	 
 	 
