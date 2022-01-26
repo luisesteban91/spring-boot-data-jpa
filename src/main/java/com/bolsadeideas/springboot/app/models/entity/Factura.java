@@ -20,6 +20,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
+import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -93,6 +94,11 @@ public class Factura implements Serializable{
 		this.createAt = creteAt;
 	}
 
+	/* @XmlTransient
+	 * bloquear el acceso al cliente al momento de convertir a xml
+	 * y evitar el cliclo infinito por la relacion bidirecional con el cliente
+	*/
+	@XmlTransient
 	public Cliente getCliente() {
 		return cliente;
 	}
