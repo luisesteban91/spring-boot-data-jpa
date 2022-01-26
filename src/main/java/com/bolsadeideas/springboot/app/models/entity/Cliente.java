@@ -24,6 +24,10 @@ import javax.validation.constraints.Size;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity //indicar que es una clase con metodos set y get mapeado a una tabla  JPA o Hibernate
 @Table(name="clientes") //INDICAR EL NOMBRE DE LA TABLA
 public class Cliente implements Serializable{ //Serializable RECOMENDADO CUANDO SE VA A TRABAJAR CON OBJETOS DE DATOS PARA PODER TRASPORTARLO A UNA BASE DE DATOS, JSON, XML. SESIONES HTTP
@@ -46,6 +50,7 @@ public class Cliente implements Serializable{ //Serializable RECOMENDADO CUANDO 
 	@Column(name="create_at")
 	@Temporal(TemporalType.DATE)//INDICAR EN QUE FORMATO SE VA A GUARDAR
 	@DateTimeFormat(pattern="yyyy-MM-dd") //INDICAR FORMARTO DE FECHA
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")//dar formato a la fecha en en json
 	private Date createAt; //Date de java.util
 	
 	private String foto;
@@ -58,6 +63,7 @@ public class Cliente implements Serializable{ //Serializable RECOMENDADO CUANDO 
 	//######RELACION CON FACTURA
 	//UN CLIENTE PUEDE TENER MUCHAS FACTURAS
 	@OneToMany(mappedBy="cliente", /*variable=a la de factura*/ fetch=FetchType.LAZY, cascade=CascadeType.ALL)//LAZY(para que cargue solo los clientes al momento de consultar clientes)//CASCADETYPE(para que persistan todos sus elementos fijos)
+	@JsonManagedReference //administrar las realaciones con clientes
 	private List<Factura> facturas;	
 	//CONSTRUCTOR(inicializar facturas)
 	public Cliente() {

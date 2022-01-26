@@ -21,6 +21,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name="facturas")
 public class Factura implements Serializable{
@@ -39,6 +41,7 @@ public class Factura implements Serializable{
 	
 	//RELACION CON CLIENTE (CLIENTE TIENE MUCHAS FACTURAS)
 	@ManyToOne(fetch=FetchType.LAZY)//LAZY(para que cargue solo las facturas al momento de consultar facturas y para eliminarla se eliminen sus relaciones)
+	@JsonBackReference //parte posterior de la relacion y se omitira para generar un loop infinito de relacion con factura
 	private Cliente cliente;
 	//FIN RELACION CON CLIENTE
 	

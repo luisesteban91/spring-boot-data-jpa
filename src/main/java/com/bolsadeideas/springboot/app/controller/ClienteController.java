@@ -99,7 +99,6 @@ public class ClienteController {
 		return "ver";
 	}
 	
-	
 	@RequestMapping(value={"/listar", "/"}, method=RequestMethod.GET)
 	public String listar(
 			@RequestParam(name="page", defaultValue="0") int page, 
@@ -107,7 +106,6 @@ public class ClienteController {
 			Authentication authentication, //importar la authetication
 			HttpServletRequest request
 	) {
-		
 //		if(authentication != null) {
 //			logger.info("Hola usuario autenticado, tu username es: ".concat(authentication.getName()));
 //		}

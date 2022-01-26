@@ -22,7 +22,7 @@ public class ItemFactura implements Serializable{
 	private Integer cantidad;
 	
 	//RELACION UNIDIRECIONAL(solo se necesita relaciona de este lado de itemFactura) CON PRODUCTO(muchos itemFactura un producto) 
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER) //EAGER traer los productos imendiantamente y no de forma peresosa con LAZY
 	@JoinColumn(name="producto_id") //Campo de RElacion, tambien se puede omitir ya que por defecto lo tomaria 
 	private Producto producto;
 	
